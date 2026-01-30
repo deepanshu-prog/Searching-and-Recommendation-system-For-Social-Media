@@ -103,7 +103,4 @@ Libraries:
 
 Team Members
 
-   Aman Singh (252IT002)
-   Ankur Patel (252IT003)
-   Deepasnhu (252IT006)
-   Yash Kumbhawat (252IT033)
+  
