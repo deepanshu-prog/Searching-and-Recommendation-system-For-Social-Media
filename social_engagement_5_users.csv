@@ -1,0 +1,13 @@
+user_id,username,friend_id,friend_name,location,friend_location,likes,comments,messages,story_views,engagement_score,edge_weight
+101,Priya,102,Priya,Pune,Pune,2,1,6,13,0.425,0.575
+101,Priya,103,Sneha,Pune,Hyderabad,18,5,15,7,0.57,0.43
+101,Priya,105,Sneha,Pune,Mumbai,3,4,6,10,0.391,0.609
+102,Priya,104,Kunal,Pune,Mumbai,3,0,23,10,0.583,0.417
+102,Priya,101,Priya,Pune,Pune,9,2,24,3,0.582,0.418
+102,Priya,105,Sneha,Pune,Mumbai,12,8,7,15,0.632,0.368
+102,Priya,103,Sneha,Pune,Hyderabad,15,6,5,8,0.435,0.565
+103,Sneha,104,Kunal,Hyderabad,Mumbai,9,1,18,5,0.453,0.547
+103,Sneha,101,Priya,Hyderabad,Pune,8,7,25,4,0.66,0.34
+104,Kunal,102,Priya,Mumbai,Pune,17,1,15,2,0.385,0.615
+105,Sneha,103,Sneha,Mumbai,Hyderabad,17,8,18,7,0.673,0.327
+105,Sneha,101,Priya,Mumbai,Pune,0,1,19,12,0.564,0.436

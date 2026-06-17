@@ -18,6 +18,11 @@ An interactive simulation of the **Dynamic Single Source Shortest Path (SSSP-Del
 - **Performance Benchmarking** — Track execution time for each operation
 - **Guided Tour** — First-visit onboarding dialog that walks through all features
 
+## Research Reference
+
+Based on: *Dynamic Single-Source Shortest Paths via Message Passing*
+[arXiv:2508.14319](https://arxiv.org/pdf/2508.14319)
+
 ## Quick Start
 
 ```bash
