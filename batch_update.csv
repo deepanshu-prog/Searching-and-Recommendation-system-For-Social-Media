@@ -1,0 +1,8 @@
+operation,u_id,v_id,weight,username,location
+add_node,200,,,Rahul,Mumbai
+add_node,201,,,Sneha,Delhi
+add_edge,101,200,0.1,,
+add_edge,200,201,0.15,,
+add_edge,201,105,0.05,,
+delete_edge,101,102,,,
+delete_node,103,,,,

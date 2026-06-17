@@ -1,0 +1,14 @@
+user_id,username,friend_id,friend_name,location,friend_location,likes,comments,messages,story_views,engagement_score,edge_weight
+101,Vihaan,102,Vihaan,Bangalore,Kolkata,2,10,4,12,0.514,0.486
+101,Vihaan,103,Vihaan,Bangalore,Kolkata,9,8,8,7,0.473,0.527
+102,Vihaan,104,Sai,Kolkata,Bangalore,20,4,20,1,0.52,0.48
+103,Vihaan,105,Diya,Kolkata,Pune,16,0,21,14,0.696,0.304
+103,Vihaan,101,Vihaan,Kolkata,Bangalore,6,2,14,6,0.414,0.586
+103,Vihaan,104,Sai,Kolkata,Bangalore,3,1,19,7,0.479,0.521
+104,Sai,102,Vihaan,Bangalore,Kolkata,18,10,15,4,0.61,0.39
+104,Sai,103,Vihaan,Bangalore,Kolkata,1,7,3,12,0.433,0.567
+104,Sai,101,Vihaan,Bangalore,Bangalore,6,10,18,10,0.79,0.21
+105,Diya,102,Vihaan,Pune,Kolkata,15,8,23,9,0.783,0.217
+105,Diya,104,Sai,Pune,Bangalore,3,5,19,4,0.499,0.501
+105,Diya,103,Vihaan,Pune,Kolkata,10,0,6,0,0.146,0.854
+105,Diya,101,Vihaan,Pune,Bangalore,10,5,25,0,0.55,0.45
