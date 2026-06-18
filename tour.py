@@ -89,32 +89,32 @@ You're all set! Close this dialog to start exploring. You can replay this tour a
 ]
 
 
-@st.dialog("Guided Tour", width="large")
-def show_tour():
+def render_tour():
+    """Render tour inline using a container with overlay styling."""
     step = st.session_state.get("tour_step", 0)
     total = len(TOUR_STEPS)
     current = TOUR_STEPS[step]
 
-    st.progress((step + 1) / total, text=f"Step {step + 1} of {total}")
+    with st.container(border=True):
+        st.progress((step + 1) / total, text=f"Step {step + 1} of {total}")
+        st.markdown(f"### {current['icon']} {current['title']}")
+        st.markdown(current["content"])
 
-    st.markdown(f"### {current['icon']} {current['title']}")
-    st.markdown(current["content"])
+        cols = st.columns([1, 1, 1])
 
-    cols = st.columns([1, 1, 1])
+        with cols[0]:
+            if step > 0:
+                if st.button("← Previous", use_container_width=True, key="tour_prev"):
+                    st.session_state.tour_step = step - 1
+                    st.rerun()
 
-    with cols[0]:
-        if step > 0:
-            if st.button("← Previous", use_container_width=True):
-                st.session_state.tour_step = step - 1
-                st.rerun()
-
-    with cols[2]:
-        if step < total - 1:
-            if st.button("Next →", use_container_width=True, type="primary"):
-                st.session_state.tour_step = step + 1
-                st.rerun()
-        else:
-            if st.button("Finish Tour ✓", use_container_width=True, type="primary"):
-                st.session_state.tour_seen = True
-                st.session_state.tour_step = 0
-                st.rerun()
+        with cols[2]:
+            if step < total - 1:
+                if st.button("Next →", use_container_width=True, type="primary", key="tour_next"):
+                    st.session_state.tour_step = step + 1
+                    st.rerun()
+            else:
+                if st.button("Finish Tour ✓", use_container_width=True, type="primary", key="tour_finish"):
+                    st.session_state.tour_active = False
+                    st.session_state.tour_step = 0
+                    st.rerun()

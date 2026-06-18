@@ -3,8 +3,11 @@ import pandas as pd
 import math
 
 from graph_manager import SSSPGraphUI
-from config import PAGE_CONFIG, CUSTOM_CSS, COLOR_LEGEND_HTML, GITHUB_URL
-from tour import show_tour
+from config import (
+    PAGE_CONFIG, LIGHT_CSS, DARK_CSS, COLOR_LEGEND_HTML,
+    GITHUB_URL, COLORS_LIGHT, COLORS_DARK,
+)
+from tour import render_tour
 
 
 def update_source_callback():
@@ -15,7 +18,6 @@ def update_source_callback():
 
 
 st.set_page_config(**PAGE_CONFIG)
-st.markdown(CUSTOM_CSS, unsafe_allow_html=True)
 
 # --- Session State Init ---
 if 'graph' not in st.session_state:
@@ -31,22 +33,29 @@ if 'benchmark' not in st.session_state:
     st.session_state.benchmark = []
 if 'search_result_id' not in st.session_state:
     st.session_state.search_result_id = None
-if 'tour_seen' not in st.session_state:
-    st.session_state.tour_seen = False
-if 'tour_step' not in st.session_state:
-    st.session_state.tour_step = 0
+if 'dark_mode' not in st.session_state:
+    st.session_state.dark_mode = False
 if 'source_selector_value' not in st.session_state and st.session_state.graph.all_users:
     st.session_state.source_selector_value = next(iter(st.session_state.graph.all_users.keys()))
+
+# --- Theme ---
+is_dark = st.session_state.dark_mode
+st.markdown(DARK_CSS if is_dark else LIGHT_CSS, unsafe_allow_html=True)
+colors = COLORS_DARK if is_dark else COLORS_LIGHT
 
 g = st.session_state.graph
 user_ids = sorted(list(g.all_users.keys()))
 
-# --- Auto-trigger Tour ---
-if not st.session_state.tour_seen:
-    show_tour()
-
 # --- Title & Metrics ---
 st.title("🔗 SSSP Network Simulator")
+
+# --- Tour ---
+if 'tour_active' not in st.session_state:
+    st.session_state.tour_active = True
+    st.session_state.tour_step = 0
+
+if st.session_state.tour_active:
+    render_tour()
 
 if user_ids and g.source_user_id is not None:
     total_edges = sum(len(u.out_edges) for u in g.all_users.values())
@@ -61,7 +70,14 @@ if user_ids and g.source_user_id is not None:
 
 # --- Sidebar Controls ---
 with st.sidebar:
-    st.header("⚙️ Controls")
+    top_cols = st.columns([3, 1])
+    with top_cols[0]:
+        st.header("⚙️ Controls")
+    with top_cols[1]:
+        theme_icon = "☀️" if is_dark else "🌙"
+        if st.button(theme_icon, help="Toggle light/dark theme"):
+            st.session_state.dark_mode = not st.session_state.dark_mode
+            st.rerun()
 
     if user_ids:
         src_idx = 0
@@ -167,7 +183,7 @@ with st.sidebar:
     st.divider()
 
     if st.button("🗺️ Take a Tour"):
-        st.session_state.tour_seen = False
+        st.session_state.tour_active = True
         st.session_state.tour_step = 0
         st.rerun()
 
@@ -209,8 +225,10 @@ with col1:
             else:
                 st.warning("Node is unreachable.")
 
+        st.markdown('<div class="graph-container">', unsafe_allow_html=True)
         with st.spinner("Rendering graph..."):
-            st.pyplot(g.get_graph_figure(highlight_path=path_list))
+            st.pyplot(g.get_graph_figure(highlight_path=path_list, colors=colors))
+        st.markdown('</div>', unsafe_allow_html=True)
 
         st.markdown(COLOR_LEGEND_HTML, unsafe_allow_html=True)
 
@@ -245,21 +263,17 @@ st.subheader("🤝 People You May Know")
 if g.source_user_id is not None:
     recommendations = g.get_recommendations(top_n=5)
     if recommendations:
-        cols = st.columns(min(len(recommendations), 5))
+        rec_cols = st.columns(min(len(recommendations), 5))
         for i, rec in enumerate(recommendations):
-            with cols[i]:
+            with rec_cols[i]:
                 st.markdown(f"""
-<div style="background: linear-gradient(135deg, #f5f7fa, #e4e9f2);
-            padding: 16px; border-radius: 12px; text-align: center;
-            border: 1px solid #dfe6e9; min-height: 160px;">
+<div class="rec-card">
     <div style="font-size: 2rem;">👤</div>
-    <div style="font-weight: 700; font-size: 1rem; margin: 4px 0; color: #2C3E50;">
-        {rec['username']}
-    </div>
-    <div style="font-size: 0.8rem; color: #7F8C8D;">ID: {rec['id']}</div>
+    <div class="name">{rec['username']}</div>
+    <div class="meta">ID: {rec['id']}</div>
     <div style="margin-top: 8px; font-size: 0.85rem;">
-        <span style="color: #2ECC71; font-weight: 600;">Strength: {rec['strength']}</span><br>
-        <span style="color: #7F8C8D;">{rec['hops']} hops away</span>
+        <span class="strength">Strength: {rec['strength']}</span><br>
+        <span class="meta">{rec['hops']} hops away</span>
     </div>
 </div>
 """, unsafe_allow_html=True)

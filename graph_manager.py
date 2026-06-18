@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 from collections import deque
 
 from sssp_algorithm import FLOAT_TOLERANCE, MessageType, Message, User
-from config import COLORS
+from config import COLORS_LIGHT
 
 
 class SSSPGraphUI:
@@ -237,10 +237,15 @@ class SSSPGraphUI:
         candidates.sort(key=lambda x: x["distance"])
         return candidates[:top_n]
 
-    def get_graph_figure(self, highlight_path=None):
-        fig, ax = plt.subplots(figsize=(10, 6))
-        G = nx.DiGraph()
+    def get_graph_figure(self, highlight_path=None, colors=None):
+        if colors is None:
+            colors = COLORS_LIGHT
 
+        fig, ax = plt.subplots(figsize=(12, 7))
+        fig.patch.set_facecolor(colors["fig_bg"])
+        ax.set_facecolor(colors["ax_bg"])
+
+        G = nx.DiGraph()
         node_colors = []
         path_edges = set()
         path_nodes = set()
@@ -259,15 +264,15 @@ class SSSPGraphUI:
             G.add_node(uid)
 
             if uid == self.source_user_id:
-                color = COLORS["source"]
+                color = colors["source"]
             elif uid == dest_id:
-                color = COLORS["destination"]
+                color = colors["destination"]
             elif uid in path_nodes:
-                color = COLORS["path"]
+                color = colors["path"]
             elif user.distance == math.inf:
-                color = COLORS["unreachable"]
+                color = colors["unreachable"]
             else:
-                color = COLORS["normal"]
+                color = colors["normal"]
 
             node_colors.append(color)
             for fid, w in user.out_edges.items():
@@ -276,16 +281,17 @@ class SSSPGraphUI:
         if not G.nodes:
             return fig
 
-        pos = nx.spring_layout(G, seed=42, k=1.5)
+        pos = nx.spring_layout(G, seed=42, k=2.0)
 
         ordered_nodes = sorted(G.nodes())
         nx.draw_networkx_nodes(
             G, pos,
             nodelist=ordered_nodes,
             node_color=[node_colors[sorted_ids.index(n)] for n in ordered_nodes],
-            node_size=800,
-            edgecolors='black',
-            ax=ax
+            node_size=1100,
+            edgecolors=colors["node_edge"],
+            linewidths=1.5,
+            ax=ax,
         )
 
         labels = {}
@@ -297,24 +303,47 @@ class SSSPGraphUI:
                 dist_str = "0.00"
             else:
                 dist_str = f"{user.distance:.2f}"
-            labels[n] = f"{user.username}\n(ID: {n})\n{dist_str}"
+            labels[n] = f"{user.username}\n(ID: {n})\nd={dist_str}"
 
-        nx.draw_networkx_labels(G, pos, labels=labels, font_size=8, ax=ax)
+        nx.draw_networkx_labels(
+            G, pos, labels=labels, font_size=7.5,
+            font_weight="bold", font_color=colors["label_color"], ax=ax,
+        )
 
         standard_edges = [e for e in G.edges if e not in path_edges]
-        nx.draw_networkx_edges(G, pos, edgelist=standard_edges, edge_color='gray', alpha=0.2, arrows=True, connectionstyle='arc3,rad=0.1', ax=ax)
+        nx.draw_networkx_edges(
+            G, pos, edgelist=standard_edges,
+            edge_color=colors["edge_color"], alpha=0.4,
+            arrows=True, arrowsize=15, width=1.0,
+            connectionstyle='arc3,rad=0.12', ax=ax,
+        )
         if path_edges:
-            nx.draw_networkx_edges(G, pos, edgelist=list(path_edges), edge_color=COLORS["path_edge"], width=2.5, arrows=True, connectionstyle='arc3,rad=0.1', ax=ax)
+            nx.draw_networkx_edges(
+                G, pos, edgelist=list(path_edges),
+                edge_color=colors["path_edge"], width=3.0,
+                arrows=True, arrowsize=20,
+                connectionstyle='arc3,rad=0.12', ax=ax,
+            )
 
         edge_labels = nx.get_edge_attributes(G, 'weight')
-        nx.draw_networkx_edge_labels(G, pos, edge_labels=edge_labels, label_pos=0.3, font_size=7, ax=ax)
+        nx.draw_networkx_edge_labels(
+            G, pos, edge_labels=edge_labels, label_pos=0.3,
+            font_size=7, font_color=colors["edge_label_color"],
+            bbox=dict(boxstyle="round,pad=0.15", fc=colors["ax_bg"], ec="none", alpha=0.8),
+            ax=ax,
+        )
 
         if self.source_user_id in self.all_users:
             src_name = self.all_users[self.source_user_id].username
             src_id = self.source_user_id
-            ax.set_title(f"SSSP Tree | Source: {src_name} (ID {src_id})", fontsize=10)
+            ax.set_title(
+                f"SSSP Tree  |  Source: {src_name} (ID {src_id})",
+                fontsize=12, fontweight="bold", color=colors["title_color"],
+                pad=12,
+            )
 
         ax.axis('off')
+        fig.tight_layout(pad=1.0)
         return fig
 
     def get_path(self, target_id):
