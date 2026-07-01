@@ -5,6 +5,10 @@
 ![NetworkX](https://img.shields.io/badge/NetworkX-Graph%20Analysis-4C9A2A)
 ![License](https://img.shields.io/badge/License-MIT-green)
 
+### 🚀 [**Launch the Live App**](https://graph-recommendation-system.streamlit.app/)
+
+[![Open in Streamlit](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://graph-recommendation-system.streamlit.app/)
+
 An interactive simulation of the **Dynamic Single Source Shortest Path (SSSP-Del)** algorithm applied to social network analysis. The system computes shortest paths in real time and updates them incrementally when the graph changes — no full recomputation needed.
 
 ## Features
@@ -24,6 +28,8 @@ Based on: *Dynamic Single-Source Shortest Paths via Message Passing*
 [arXiv:2508.14319](https://arxiv.org/pdf/2508.14319)
 
 ## Quick Start
+
+> **Just want to try it?** Skip the setup — the app is live at [graph-recommendation-system.streamlit.app](https://graph-recommendation-system.streamlit.app/)
 
 ```bash
 # Install dependencies
